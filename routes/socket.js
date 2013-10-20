@@ -1,58 +1,49 @@
 // Keep track of which names are used so that there are no duplicates
-var userNames = (function () {
-    var claim = function (name) {
-        if (!name || userNames[name]) {
+var Users = {
+    userNames: [],
+    claim: function (name) {
+        if (!name || this.userNames[name]) {
             return false;
         } else {
-            userNames[name] = true;
+            this.userNames[name] = true;
             return true;
         }
-    };
-
+    },
     // find the lowest unused "guest" name and claim it
-    var getGuestName = function () {
+    getGuestName: function () {
         var name,
             nextUserId = 1;
-
         do {
             name = 'Guest ' + nextUserId;
             nextUserId += 1;
-        } while (!claim(name));
-
+        } while (!this.claim(name));
         return name;
-    };
-
+    },
     // serialize claimed names as an array
-    var get = function () {
+    get: function () {
         var res = [];
-        for (user in userNames) {
+        for (var user in this.userNames) {
             res.push(user);
         }
-
         return res;
-    };
-
-    var free = function (name) {
-        if (userNames[name]) {
-            delete userNames[name];
+    },
+    free: function (name) {
+        if (this.userNames[name]) {
+            delete this.userNames[name];
         }
-    };
-
-    return {
-        getGuestName: getGuestName
-    };
-}());
+    }
+};
 /*
  * Serve content over a socket
  */
 
 module.exports = function (socket) {
-    var name = userNames.getGuestName();
+    var name = Users.getGuestName();
 
     // send the new user their name and a list of users
     socket.emit('init', {
         name: name,
-        users: userNames.get()
+        users: Users.get()
     });
 
     // notify other clients that a new user has joined
@@ -70,9 +61,9 @@ module.exports = function (socket) {
 
     // validate a user's name change, and broadcast it on success
     socket.on('change:name', function (data, fn) {
-        if (userNames.claim(data.name)) {
+        if (Users.claim(data.name)) {
             var oldName = name;
-            userNames.free(oldName);
+            Users.free(oldName);
 
             name = data.name;
 
@@ -80,7 +71,6 @@ module.exports = function (socket) {
                 oldName: oldName,
                 newName: name
             });
-
             fn(true);
         } else {
             fn(false);
@@ -92,6 +82,6 @@ module.exports = function (socket) {
         socket.broadcast.emit('user:left', {
             name: name
         });
-        userNames.free(name);
+        Users.free(name);
     });
 };
