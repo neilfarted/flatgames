@@ -1,9 +1,9 @@
 doctype 5
-html
+html(ng-app='flatGames')
     head
         title= title
         link(rel='stylesheet', href='/css/global.css')
-    body(ng-app='flatGames')
+    body
         .ng-view
-        script(src='/js/lib/angular.min.js')
+        script(src='/js/lib/angular/angular.min.js')
         script(src='/js/app.js')
