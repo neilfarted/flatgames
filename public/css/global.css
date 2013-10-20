@@ -1,0 +1,42 @@
+html,
+body,
+img,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul,
+li,
+dl,
+dt,
+dd,
+button,
+input {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+ul,
+ol {
+  list-style: none;
+}
+.overflowable {
+  height: 240px;
+  overflow-y: auto;
+  border: 1px solid #000;
+}
+.overflowable p {
+  margin: 0;
+}
+/* poor man's grid system */
+.col {
+  float: left;
+  width: 350px;
+}
+.clr {
+  clear: both;
+}

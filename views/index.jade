@@ -1,5 +1,9 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype 5
+html
+    head
+        title= title
+        link(rel='stylesheet', href='/css/global.css')
+    body(ng-app='flatGames')
+        .ng-view
+        script(src='/js/lib/angular.min.js')
+        script(src='/js/app.js')
