@@ -7,8 +7,8 @@ angular.module('flatGames.controllers', []).
     }]).
     controller('GameCtrl', ['$scope', 'Socket', function ($scope, socket) {
         socket.on('init', function (data) {
-            $scope.turn = data.users.length > 1;
-            $scope.u_id = data.users.length;
+            $scope.turn = data.users > 1;
+            $scope.u_id = data.users;
         });
 
         socket.on('get:tag', function (data) {
