@@ -36,6 +36,7 @@ var Users = {
 
 module.exports = function (socket) {
     var name = Users.getGuestName();
+    Players.add();
     socket.on('pass:tag', function (data) {
         socket.broadcast.emit('get:tag', {
             id: data.id === 0 ? 1 : 0
@@ -46,7 +47,7 @@ module.exports = function (socket) {
         name: name,
         users: Users.userNames,
         messages: [],
-        players: Players.add()
+        players: Players.count
     });
 
     // notify other clients that a new user has joined
