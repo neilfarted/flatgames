@@ -19,6 +19,16 @@ var Users = {
             this.userNames.splice(idx, 1);
         }
     }
+}, Players = {
+    count: 0,
+    add: function () {
+        this.count += 1;
+        return this.count;
+    },
+    destroy: function () {
+        this.count -= 1;
+        return this.count;
+    }
 };
 /*
  * Serve content over a socket
@@ -26,7 +36,7 @@ var Users = {
 
 module.exports = function (socket) {
     var name = Users.getGuestName(),
-        players = [];
+        players = Players;
     socket.on('pass:tag', function (data) {
         socket.broadcast.emit('get:tag', {
             id: data.id === 0 ? 1 : 0
@@ -37,7 +47,7 @@ module.exports = function (socket) {
         name: name,
         users: Users.userNames,
         messages: [],
-        players: players
+        players: players.add()
     });
 
     // notify other clients that a new user has joined
@@ -77,5 +87,6 @@ module.exports = function (socket) {
             name: name
         });
         Users.free(name);
+        Players.destroy();
     });
 };
