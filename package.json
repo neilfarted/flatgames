@@ -10,6 +10,7 @@
         "express": "3.4.0",
         "jade": "*",
         "stylus": "*",
+        "asset_builder": "0.2",
         "mongodb": "*"
     }
 }

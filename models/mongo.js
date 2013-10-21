@@ -15,7 +15,7 @@ Mongo.prototype.getCollection = function (callback) {
         } else {
             callback(null, game_collection);
         }
-    });
+    }, null);
 };
 Mongo.prototype.findAll = function (callback) {
     this.getCollection(function (error, game_collection) {

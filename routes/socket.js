@@ -1,14 +1,8 @@
+'use strict';
+
 // Keep track of which names are used so that there are no duplicates
 var Users = {
     userNames: [],
-    claim: function (name) {
-        if (!name || this.userNames[name]) {
-            return false;
-        } else {
-            this.userNames[name] = true;
-            return true;
-        }
-    },
     // find the lowest unused "guest" name and claim it
     getGuestName: function () {
         var name,
@@ -16,20 +10,13 @@ var Users = {
         do {
             name = 'Guest ' + nextUserId;
             nextUserId += 1;
-        } while (!this.claim(name));
+        } while (this.userNames.indexOf(name) > -1);
         return name;
     },
-    // serialize claimed names as an array
-    get: function () {
-        var res = [];
-        for (var user in this.userNames) {
-            res.push(user);
-        }
-        return res;
-    },
     free: function (name) {
-        if (this.userNames[name]) {
-            delete this.userNames[name];
+        var idx;
+        while (-1 < (idx = this.userNames.indexOf(name))) {
+            this.userNames.splice(idx, 1);
         }
     }
 };
@@ -38,12 +25,19 @@ var Users = {
  */
 
 module.exports = function (socket) {
-    var name = Users.getGuestName();
-
+    var name = Users.getGuestName(),
+        players = [];
+    socket.on('pass:tag', function (data) {
+        socket.broadcast.emit('get:tag', {
+            id: data.id === 0 ? 1 : 0
+        });
+    });
     // send the new user their name and a list of users
     socket.emit('init', {
         name: name,
-        users: Users.get()
+        users: Users.userNames,
+        messages: [],
+        players: players
     });
 
     // notify other clients that a new user has joined
@@ -61,7 +55,7 @@ module.exports = function (socket) {
 
     // validate a user's name change, and broadcast it on success
     socket.on('change:name', function (data, fn) {
-        if (Users.claim(data.name)) {
+        if (Users.userNames.indexOf(data.name) === -1) {
             var oldName = name;
             Users.free(oldName);
 

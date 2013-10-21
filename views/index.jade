@@ -1,10 +1,11 @@
 doctype 5
-html(ng-app='flatGames')
+html(ng-app='#{angularApp}')
     head
-        title= title
+        title Flat Games Simulator 5000
         link(rel='stylesheet', href='/css/global.css')
     body
         .ng-view
         script(src='/socket.io/socket.io.js')
         script(src='/js/lib/angular/angular.min.js')
-        script(src='/js/app.js')
+        - each script in scripts
+            script(src=script)
