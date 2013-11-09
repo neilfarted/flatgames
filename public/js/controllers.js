@@ -6,12 +6,17 @@ angular.module('flatGames.controllers', []).
     controller('HomeCtrl', ['$scope', 'Socket', function ($scope, socket) {
     }]).
     controller('LoginCtrl', ['$scope', 'Socket', function ($scope, socket) {
+        $scope.messages = [];
         $scope.submit = function () {
             socket.emit('user:login', {
                 name: $scope.user.name,
                 hash: new Date().getTime().toString(16).toString()
             });
         };
+        socket.on('send:message', function (message) {
+            console.log(message);
+            $scope.messages.push(message);
+        });
     }]).
     controller('GameCtrl', ['$scope', 'Socket', function ($scope, socket) {
         socket.on('init', function (data) {

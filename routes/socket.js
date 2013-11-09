@@ -41,6 +41,8 @@ module.exports = function (socket) {
     var user = new User(), players = new Players();
     socket.on('user:login', function (data) {
         user = players.add(data.name, data.hash);
+        console.log(user);
+        socket.broadcast.emit('send:message', {text: user.getName()});
     });
 
     /*socket.on('pass:tag', function (data) {
@@ -92,6 +94,6 @@ module.exports = function (socket) {
         socket.broadcast.emit('user:left', {
             name: user.getName
         });
-        Players.destroy(user.getHash);
+        players.destroy(user.getHash);
     });
 };

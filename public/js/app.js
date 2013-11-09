@@ -2,7 +2,7 @@
 /*globals angular, io */
 'use strict';
 
-angular.module('flatGames', ['flatGames.controllers', 'flatGames.services']).
+angular.module('flatGames', ['ngRoute', 'flatGames.controllers', 'flatGames.services']).
     config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
         $routeProvider.
