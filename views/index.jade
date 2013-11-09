@@ -7,5 +7,6 @@ html(ng-app='#{angularApp}')
         .ng-view
         script(src='/socket.io/socket.io.js')
         script(src='/js/lib/angular/angular.min.js')
+        script(src='/js/lib/angular/angular.route.min.js')
         - each script in scripts
             script(src=script)
