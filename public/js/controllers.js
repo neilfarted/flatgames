@@ -3,7 +3,15 @@
 'use strict';
 
 angular.module('flatGames.controllers', []).
-    controller('HomeCtrl', ['$scope', function ($scope, socket) {
+    controller('HomeCtrl', ['$scope', 'Socket', function ($scope, socket) {
+    }]).
+    controller('LoginCtrl', ['$scope', 'Socket', function ($scope, socket) {
+        $scope.submit = function () {
+            socket.emit('user:login', {
+                name: $scope.user.name,
+                hash: new Date().getTime().toString(16).toString()
+            });
+        };
     }]).
     controller('GameCtrl', ['$scope', 'Socket', function ($scope, socket) {
         socket.on('init', function (data) {

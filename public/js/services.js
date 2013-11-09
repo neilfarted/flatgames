@@ -3,6 +3,24 @@
 'use strict';
 
 angular.module('flatGames.services', []).
+    factory('User', ['LocalStorage', function (LocalStorage) {
+        var state;
+        return {
+            isLoggedIn: function () {
+                return state && state === 'loggedIn';
+            },
+            login: function (user) {
+                //bypass authentication for now
+                state = 'loggedIn';
+                LocalStorage.set('UserName', user.name);
+                LocalStorage.set('UserId', user.id);
+            },
+            logout: function (user) {
+                state = null;
+                LocalStorage.remove('UserId');
+            }
+        };
+    }]).
     factory('LocalStorage', ['$window', function ($window) {
         var checkLocalStorage = function () {
             try {

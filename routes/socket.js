@@ -1,33 +1,34 @@
 'use strict';
-
-// Keep track of which names are used so that there are no duplicates
-var Users = {
-    userNames: [],
-    // find the lowest unused "guest" name and claim it
-    getGuestName: function () {
-        var name,
-            nextUserId = 1;
-        do {
-            name = 'Guest ' + nextUserId;
-            nextUserId += 1;
-        } while (this.userNames.indexOf(name) > -1);
-        return name;
-    },
-    free: function (name) {
-        var idx;
-        while (-1 < (idx = this.userNames.indexOf(name))) {
-            this.userNames.splice(idx, 1);
+var Mongo = require('../models/mongo').Mongo;
+var User = function () {
+    var name = '', hash = '';
+    return {
+        getName: function () {
+            return this.name;
+        },
+        setName: function (newName) {
+            this.name = newName;
+        },
+        getHash: function () {
+            return this.hash;
+        },
+        setHash: function (newHash) {
+            this.hash = newHash;
         }
-    }
-}, Players = {
-    count: 0,
-    add: function () {
-        this.count += 1;
-        return this.count;
+    };
+};
+// Keep track of which names are used so that there are no duplicates
+var Players = {
+    users: [],
+    add: function (name, hash) {
+        var newUser = new User();
+        newUser.setName(name);
+        newUser.setHash(hash);
+        this.users[hash] = newUser;
+        return this.users[hash];
     },
-    destroy: function () {
-        this.count -= 1;
-        return this.count;
+    destroy: function (hash) {
+        delete this.users[hash];
     }
 };
 /*
@@ -35,9 +36,12 @@ var Users = {
  */
 
 module.exports = function (socket) {
-    var name = Users.getGuestName();
-    Players.add();
-    socket.on('pass:tag', function (data) {
+    var user, players = new Players();
+    socket.on('user:login', function (data) {
+        user = players.add(data.name, data.hash);
+    });
+
+    /*socket.on('pass:tag', function (data) {
         socket.broadcast.emit('get:tag', {
             id: data.id === 0 ? 1 : 0
         });
@@ -79,14 +83,13 @@ module.exports = function (socket) {
         } else {
             fn(false);
         }
-    });
+    });*/
 
     // clean up when a user leaves, and broadcast it to other users
     socket.on('disconnect', function () {
         socket.broadcast.emit('user:left', {
-            name: name
+            name: user.name
         });
-        Users.free(name);
-        Players.destroy();
+        Players.destroy(user.hash);
     });
 };
