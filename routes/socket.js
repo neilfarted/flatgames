@@ -38,7 +38,7 @@ var Players = function () {
  */
 
 module.exports = function (socket) {
-    var user, players = new Players();
+    var user = new User(), players = new Players();
     socket.on('user:login', function (data) {
         user = players.add(data.name, data.hash);
     });
@@ -90,8 +90,8 @@ module.exports = function (socket) {
     // clean up when a user leaves, and broadcast it to other users
     socket.on('disconnect', function () {
         socket.broadcast.emit('user:left', {
-            name: user.name
+            name: user.getName
         });
-        Players.destroy(user.hash);
+        Players.destroy(user.getHash);
     });
 };
