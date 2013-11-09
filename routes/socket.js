@@ -18,18 +18,20 @@ var User = function () {
     };
 };
 // Keep track of which names are used so that there are no duplicates
-var Players = {
-    users: [],
-    add: function (name, hash) {
-        var newUser = new User();
-        newUser.setName(name);
-        newUser.setHash(hash);
-        this.users[hash] = newUser;
-        return this.users[hash];
-    },
-    destroy: function (hash) {
-        delete this.users[hash];
-    }
+var Players = function () {
+    return {
+        users: [],
+        add: function (name, hash) {
+            var newUser = new User();
+            newUser.setName(name);
+            newUser.setHash(hash);
+            this.users[hash] = newUser;
+            return this.users[hash];
+        },
+        destroy: function (hash) {
+            delete this.users[hash];
+        }
+    };
 };
 /*
  * Serve content over a socket
