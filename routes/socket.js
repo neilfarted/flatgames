@@ -41,7 +41,7 @@ var Players = function () {
  * Serve content over a socket
  */
 
-module.exports = function (io) {
+module.exports = function (io, app) {
     var user, players = new Players(), timeouts = [];
     function logout(ip) {
         players.destroy(ip);
@@ -50,7 +50,7 @@ module.exports = function (io) {
             users: players.getAllUserNames()
         });
     }
-    io.sockets.on('connection', function (socket, app) {
+    io.sockets.on('connection', function (socket) {
         var ip;
         if ('production' === app.get('env')) {
             ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
