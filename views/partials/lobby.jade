@@ -1,0 +1,9 @@
+h1 Lobby
+ul
+    li(ng-repeat="user in users") {{user.name}}
+hr
+.message(ng-repeat="message in messages") {{message.text}}
+hr
+button(ng-show="!loggedIn", ng-click="showLogin=true") Login
+button(ng-show="loggedIn", ng-click="logout()") Logout
+fg-login

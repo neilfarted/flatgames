@@ -1,5 +1,6 @@
-input(type='text', placeholder='UserName', ng-model='user.name')
-input(type='password', disabled='disabled')
-button(ng-click='submit()') Login
-section.messages
-    .message(ng-repeat='message in messages') {{message.text}}
+.login(ng-show="showLogin")
+    input(type='text', placeholder='UserName', ng-model='user.name')
+    button(ng-click="showLogin = false") Cancel
+    button(ng-click='submit()') Login
+    section.messages
+        .message(ng-repeat='message in messages') {{message.text}}

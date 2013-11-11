@@ -25,11 +25,11 @@ app.use(app.router);
 
 if ('production' === app.get('env')) {
     AngularAppName = 'flatGames';
-    scriptPaths = ['/js/app.js', '/js/controllers.js', '/js/services.js'];
+    scriptPaths = ['/js/app.js', '/js/controllers.js', '/js/services.js', '/js/directives.js'];
 } else {
     app.use(express.errorHandler());
     AngularAppName = 'flatGames';
-    scriptPaths = ['/js/lib/angular/angular-mocks.js', '/js/app.js', '/js/controllers.js', '/js/services.js', '/test/e2e/app.js'];
+    scriptPaths = ['/js/lib/angular/angular-mocks.js', '/js/app.js', '/js/controllers.js', '/js/services.js', '/js/directives.js', '/test/e2e/app.js'];
 }
 // mongo
 // var mongo = new Mongo('localhost', 27017);
@@ -57,7 +57,8 @@ app.get('*', function (req, res) {
 });
 
 // Socket.io Communication
-io.sockets.on('connection', require('./routes/socket'));
+require('./routes/socket')(io);
+//io.sockets.on('connection', require('./routes/socket'));
 
 
 server.listen(app.get('port'), function () {
