@@ -9,4 +9,27 @@ angular.module('flatGames.directives', []).
             replace: true,
             templateUrl: '/partials/login'
         };
+    }]).
+    directive('fgEnter', [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element.bind("keydown keypress", function(event) {
+                    if(event.which === 13) {
+                        scope.$apply(function(){
+                            scope.$eval(attrs.fgEnter);
+                        });
+                        event.preventDefault();
+                    }
+                });
+            }
+        };
+    }]).
+    directive('fgScroll', [function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                element[0].scrollIntoView();
+            }
+        };
     }]);

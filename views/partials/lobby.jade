@@ -1,9 +1,18 @@
-h1 Lobby
-ul
-    li(ng-repeat="user in users") {{user.name}}
-hr
-.message(ng-repeat="message in messages") {{message.text}}
-hr
-button(ng-show="!loggedIn", ng-click="showLogin=true") Login
-button(ng-show="loggedIn", ng-click="logout()") Logout
+section.head
+    h1 FlatGames Simulator 5000
+section.body
+    .chatroom.fl
+        .title Messages
+        ul.messages.oa
+            li(ng-repeat="message in messages", fg-scroll) {{message.text}}
+    .userList.fl
+        .title Users
+        ul.users.oa
+            li(ng-repeat="user in users", ng-class="{self: user.name == loggedIn}") {{user.name}}
+section.actions
+    .chat(ng-show="loggedIn")
+        input.text(type="text", placeholder="type your message here", ng-model="input.text", fg-enter="sendMessage()")
+        input.enter(type="button", value="↵", ng-click="sendMessage()")
+    button(ng-show="!loggedIn", ng-click="showLogin=true") Login
+    button(ng-show="loggedIn", ng-click="logout()") Logout
 fg-login

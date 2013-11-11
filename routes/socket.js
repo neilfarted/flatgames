@@ -22,7 +22,7 @@ var Players = function () {
         getAllUserNames: function () {
             var prop, retArr = [];
             for (prop in this.users) {
-                if (this.users.hasOwnProperty(prop)) {
+                if (this.users.hasOwnProperty(prop) && this.users[prop].hasOwnProperty(('name'))) {
                     retArr.push({name: this.users[prop].name});
                 }
             }
@@ -45,10 +45,12 @@ module.exports = function (io, app) {
     var user, players = new Players(), timeouts = [];
     function logout(ip) {
         players.destroy(ip);
-        io.sockets.emit('lobby:leave', {
-            name: user.name,
-            users: players.getAllUserNames()
-        });
+        if (user && user.hasOwnProperty('name')) {
+            io.sockets.emit('lobby:leave', {
+                name: user.name,
+                users: players.getAllUserNames()
+            });
+        }
     }
     io.sockets.on('connection', function (socket) {
         var ip;
@@ -61,11 +63,13 @@ module.exports = function (io, app) {
             clearTimeout(timeouts[ip]);
         }
         user = players.getUser(ip);
-        if (user) {
+        console.log({message:'checking user', user: user});
+        if (user && user.hasOwnProperty('name')) {
             socket.emit('login:success', {name: user.name});
         }
         socket.on('lobby:enter', function (data) {
             socket.emit('lobby:init', {
+                currentUser: user,
                 users: players.getAllUserNames()
             });
         });
@@ -96,15 +100,27 @@ module.exports = function (io, app) {
             });
         });*/
         socket.on('user:login', function (data) {
-            user = players.add(new User(data.name, ip));
-            socket.emit('login:success', {name: data.name});
-            io.sockets.emit('lobby:join', {
-                user: user
-            });
+            if (data.hasOwnProperty('name')) {
+                user = players.add(new User(data.name, ip));
+                socket.emit('login:success', {name: data.name});
+                io.sockets.emit('lobby:join', {
+                    user: user
+                });
+            }
             /*socket.set('user', user, function () {
                 console.log('set user: ' + user);
             });*/
             //socket.broadcast.emit('send:message', {text: user.getName()});
+        });
+
+        // broadcast a user's message to other users
+        socket.on('send:message', function (data) {
+            if (user && user.hasOwnProperty('name')) {
+                socket.broadcast.emit('send:message', {
+                    user: user,
+                    message: data.message
+                });
+            }
         });
 
         /*socket.on('pass:tag', function (data) {

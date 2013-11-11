@@ -20,7 +20,7 @@ angular.module('flatGames.controllers', []).
         });
         //socket.on()
     }]).*/
-    controller('LobbyCtrl', ['$scope', 'Socket', 'LocalStorage', '$timeout', function ($scope, socket, LocalStorage, $timeout) {
+    controller('LobbyCtrl', ['$scope', 'Socket', 'LocalStorage', '$anchorScroll', /*'$timeout', */function ($scope, socket, LocalStorage, $anchorScroll/*, $timeout*/) {
         $scope.loggedIn = LocalStorage.get('UserName');
         $scope.logout = function () {
             socket.emit('logout');
@@ -34,27 +34,43 @@ angular.module('flatGames.controllers', []).
                 name: $scope.user.name
             });
         };
+        $scope.sendMessage = function () {
+            socket.emit('send:message', {
+                message: $scope.input.text
+            });
+            $scope.messages.push({text: "You: " + $scope.input.text});
+            $scope.input.text = '';
+        };
         socket.on('login:success', function (data) {
             $scope.showLogin = false;
             LocalStorage.set('UserName', data.name);
             $scope.loggedIn = data.name;
         });
         socket.on('lobby:init', function (data) {
+            if (!data.currentUser || data.currentUser.name !== $scope.loggedIn) {
+                $scope.logout();
+            }
             $scope.users = data.users;
         });
         socket.on('lobby:join', function (data) {
-            var index = $scope.messages.push({text: data.user.name + ' has joined the lobby.'}) - 1;
+            //var index = $scope.messages.push({text: data.user.name + ' has joined the lobby.'}) - 1;
+            $scope.messages.push({text: data.user.name + ' has joined the lobby.'})
             $scope.users.push(data.user);
-            $timeout(function () {
+            /*$timeout(function () {
                 $scope.messages.splice(index, 1);
-            }, 3000);
+            }, 3000);*/
         });
         socket.on('lobby:leave', function (data) {
-            var index = $scope.messages.push({text: data.name + ' has left the lobby.'}) - 1;
+            //var index = $scope.messages.push({text: data.name + ' has left the lobby.'}) - 1;
+            $scope.messages.push({text: data.name + ' has left the lobby.'})
             $scope.users = data.users;
-            $timeout(function () {
+            /*$timeout(function () {
                 $scope.messages.splice(index, 1);
-            }, 3000);
+            }, 3000);*/
+        });
+        socket.on('send:message', function (data) {
+            $scope.messages.push({text: data.user.name + ": " + data.message});
+            $anchorScroll();
         });
     }]).
     controller('GameCtrl', ['$scope', 'Socket', function ($scope, socket) {

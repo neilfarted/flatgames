@@ -1,6 +1,7 @@
 .login(ng-show="showLogin")
-    input(type='text', placeholder='UserName', ng-model='user.name')
-    button(ng-click="showLogin = false") Cancel
-    button(ng-click='submit()') Login
-    section.messages
-        .message(ng-repeat='message in messages') {{message.text}}
+    .wrapper
+        input(type="text", placeholder="Enter your name", ng-model="user.name", fg-enter="submit()")
+        button(ng-click="showLogin = false") Cancel
+        button(ng-click="submit()") Login
+        section.messages
+            .message(ng-repeat="error in errors") {{error.text}}
