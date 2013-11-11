@@ -57,7 +57,7 @@ app.get('*', function (req, res) {
 });
 
 // Socket.io Communication
-require('./routes/socket')(io);
+require('./routes/socket')(io, app);
 //io.sockets.on('connection', require('./routes/socket'));
 
 

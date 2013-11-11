@@ -50,8 +50,13 @@ module.exports = function (io) {
             users: players.getAllUserNames()
         });
     }
-    io.sockets.on('connection', function (socket) {
-        var ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
+    io.sockets.on('connection', function (socket, app) {
+        var ip;
+        if ('production' === app.get('env')) {
+            ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address.address;
+        } else {
+            ip = socket.handshake.address.address;
+        }
         if (timeouts[ip]) {
             clearTimeout(timeouts[ip]);
         }
