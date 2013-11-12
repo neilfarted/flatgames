@@ -11,36 +11,21 @@ var Mongo = function (host, port) {
     this.db = new Db('node-mongo-test', new Server(host, port, {auto_reconnect: true, safe: true}, {}));
     this.db.open(function () {});
 };
-Mongo.prototype.getUser = function (ip) {
-    this.db.collection('users', function (error, user_collection) {
-        user_collection.findOne({ip: ip}, function (error, result) {
-            if (error) {
-                return error;
-            }
-            return result;
-        });
-    }, null);
-};
-Mongo.prototype.saveUser = function (user) {
-    this.db.collection('users', function (error, user_collection) {
-        user_collection.insert(user, function () {});
-    }, null);
-};
-/*Mongo.prototype.getCollection = function (callback) {
-    this.db.collection('games', function (error, game_collection) {
+Mongo.prototype.getCollection = function (collectionName, callback) {
+    this.db.collection(collectionName, function (error, collection) {
         if (error) {
             callback(error, null);
         } else {
-            callback(null, game_collection);
+            callback(null, collection);
         }
     }, null);
 };
-Mongo.prototype.findAll = function (callback) {
-    this.getCollection(function (error, game_collection) {
+Mongo.prototype.getAllFrom = function (collectionName, callback) {
+    this.getCollection(collectionName, function (error, collection) {
         if (error) {
             callback(error);
         } else {
-            game_collection.find().toArray(function (error, results) {
+            collection.find().toArray(function (error, results) {
                 if (error) {
                     callback(error);
                 } else {
@@ -49,6 +34,20 @@ Mongo.prototype.findAll = function (callback) {
             });
         }
     });
+};
+/*Mongo.prototype.getAllFrom = function (collectionName, callback) {
+    this.db.collection(collectionName, function (error, collection) {
+        if (error) {
+            callback(error);
+        } else {
+            callback(null, collection);
+        }
+    }, null);
+};
+Mongo.prototype.saveUser = function (user) {
+    this.db.collection('users', function (error, user_collection) {
+        user_collection.insert(user, function () {});
+    }, null);
 };
 Mongo.prototype.findByID = function (id, callback) {
     this.getCollection(function (error, game_collection) {

@@ -1,5 +1,5 @@
 'use strict';
-var Mongo = require('../models/mongo').Mongo;
+//var Mongo = require('../models/mongo').Mongo;
 var User = function (name, ip) {
     var _user = {
         name: name || '',

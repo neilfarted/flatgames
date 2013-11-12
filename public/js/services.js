@@ -4,30 +4,33 @@
 
 angular.module('flatGames.services', []).
     factory('LocalStorage', ['$window', function ($window) {
-        var checkLocalStorage = function () {
-            try {
-                return $window.hasOwnProperty('localStorage') && $window.localStorage !== null;
-            } catch (e) {
-                return false;
-            }
-        }, hasLocalStorage = checkLocalStorage(), store = $window.localStorage;
+        var store = $window.localStorage,
+            checkLocalStorage = function () {
+                try {
+                    store.setItem('test', 'test');
+                    store.removeItem('test');
+                } catch (e) {
+                    return false;
+                }
+            };
 
         return {
+            hasLocalStorage: checkLocalStorage,
             get: function (key) {
-                if (hasLocalStorage && store.hasOwnProperty(key)) {
+                if (checkLocalStorage() && store.hasOwnProperty(key)) {
                     return JSON.parse(store[key]);
                 }
                 return null;
             },
             set: function (key, value) {
-                if (hasLocalStorage) {
+                if (checkLocalStorage()) {
                     store[key] = JSON.stringify(value);
                     return true;
                 }
                 return null;
             },
             remove: function (key) {
-                if (hasLocalStorage) {
+                if (checkLocalStorage()) {
                     if (store.hasOwnProperty(key) && store[key] !== null) {
                         store.removeItem(key);
                         return true;

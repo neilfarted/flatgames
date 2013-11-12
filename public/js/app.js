@@ -35,7 +35,7 @@ angular.module('flatGames', ['ngRoute', 'flatGames.controllers', 'flatGames.serv
             when('/modernBrowser', {template: '<h1>This website requires the use of a modern browser.</h1>', controller: function () {}}).
             otherwise({redirectTo: '/lobby'});
     }]).run(['$rootScope', '$location', 'LocalStorage', function ($rootScope, $location, LocalStorage) {
-        if (LocalStorage.remove('test') === null) {
+        if (LocalStorage.che) {
             $location.path('/modernBrowser');
         }
         $rootScope.$on('$routeChangeError', function () {
