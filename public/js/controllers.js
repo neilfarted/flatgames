@@ -20,7 +20,7 @@ angular.module('flatGames.controllers', []).
         });
         //socket.on()
     }]).*/
-    controller('LobbyCtrl', ['$scope', 'Socket', 'LocalStorage', /*'$timeout', */function ($scope, socket, $anchorScroll/*, $timeout*/) {
+    controller('LobbyCtrl', ['$scope', 'Socket', 'LocalStorage', /*'$timeout', */function ($scope, socket, LocalStorage/*, $timeout*/) {
         $scope.loggedIn = LocalStorage.get('UserName');
         $scope.logout = function () {
             socket.emit('logout');
