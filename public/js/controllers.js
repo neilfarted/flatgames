@@ -20,7 +20,7 @@ angular.module('flatGames.controllers', []).
         });
         //socket.on()
     }]).*/
-    controller('LobbyCtrl', ['$scope', 'Socket', 'LocalStorage', '$anchorScroll', /*'$timeout', */function ($scope, socket, LocalStorage, $anchorScroll/*, $timeout*/) {
+    controller('LobbyCtrl', ['$scope', 'Socket', 'LocalStorage', /*'$timeout', */function ($scope, socket, $anchorScroll/*, $timeout*/) {
         $scope.loggedIn = LocalStorage.get('UserName');
         $scope.logout = function () {
             socket.emit('logout');
@@ -36,7 +36,8 @@ angular.module('flatGames.controllers', []).
         };
         $scope.sendMessage = function () {
             socket.emit('send:message', {
-                message: $scope.input.text
+                message: $scope.input.text,
+                name: $scope.loggedIn
             });
             $scope.messages.push({text: "You: " + $scope.input.text});
             $scope.input.text = '';
@@ -69,8 +70,7 @@ angular.module('flatGames.controllers', []).
             }, 3000);*/
         });
         socket.on('send:message', function (data) {
-            $scope.messages.push({text: data.userName + ": " + data.message});
-            $anchorScroll();
+            $scope.messages.push({text: data.name + ": " + data.message});
         });
     }]).
     controller('GameCtrl', ['$scope', 'Socket', function ($scope, socket) {
