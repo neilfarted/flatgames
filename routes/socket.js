@@ -102,6 +102,7 @@ module.exports = function (io, app) {
         socket.on('user:login', function (data) {
             if (data.hasOwnProperty('name')) {
                 user = players.add(new User(data.name, ip));
+                socket.userName = user.name;
                 socket.emit('login:success', {name: data.name});
                 io.sockets.emit('lobby:join', {
                     user: user
@@ -115,12 +116,10 @@ module.exports = function (io, app) {
 
         // broadcast a user's message to other users
         socket.on('send:message', function (data) {
-            if (user && user.hasOwnProperty('name')) {
-                socket.broadcast.emit('send:message', {
-                    user: user,
-                    message: data.message
-                });
-            }
+            socket.broadcast.emit('send:message', {
+                userName: socket.userName,
+                message: data.message
+            });
         });
 
         /*socket.on('pass:tag', function (data) {

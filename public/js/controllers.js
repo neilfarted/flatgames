@@ -69,7 +69,7 @@ angular.module('flatGames.controllers', []).
             }, 3000);*/
         });
         socket.on('send:message', function (data) {
-            $scope.messages.push({text: data.user.name + ": " + data.message});
+            $scope.messages.push({text: data.userName + ": " + data.message});
             $anchorScroll();
         });
     }]).
